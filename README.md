@@ -59,31 +59,7 @@ Illustrative output (not a recorded measurement):
 
 A Python or MATLAB reader must split each line at the comma and parse **both** values. A reader written for the previous potentiometer project, which expects one integer per line, needs to be adapted.
 
-## How it works
 
-`setup()` starts serial communication, configures pin 2 as an input, and reads the initial sensor state.
-
-Each `loop()` iteration reads the current state and compares it with the previous state. A HIGH-to-LOW transition increments the counter and sends the timestamp and count. The current state then becomes the previous state for the next iteration.
-
-If an object is already detected at startup, it is not counted immediately. Remove it and bring it back to create a new entry.
-
-## Manual validation
-
-| Action | Expected result |
-| --- | --- |
-| Start with the detection area clear | No event row |
-| Bring an object into the detection area | One new row; count increases by one |
-| Hold the object still in the detection area | No additional rows if the signal stays LOW |
-| Remove the object | No event row |
-| Bring it back | One more row; count increases by one |
-| Reset with the detection area clear, then detect an object | First new event has count 1 |
-
-**Validation status:** active-low sensor behavior and the earlier basic edge counter were confirmed on the user's hardware. This timestamped V1 still needs to be uploaded and checked on the physical board; it has not been hardware-validated as part of this repository preparation.
-
-## Limitations and next steps
-
-- The 20 ms loop delay plus processing time means very short detections or clear gaps can be missed. This is a learning prototype for slow, separated events.
-- V1 has no software noise filter. A fluctuating sensor signal can create extra counts.
 - Reflectivity, object angle, ambient light, and the threshold setting affect detection.
 - One sensor cannot determine travel direction or guarantee that each detection corresponds to a different object.
 - On an Uno, `millis()` wraps after approximately 49.7 days.
